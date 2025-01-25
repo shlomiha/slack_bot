@@ -3,6 +3,7 @@ from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
 from slack_bot.credentials import load_credentials
 from slack_bot.s3_operations import add_record, retrieve_record, download_db
+import os
 
 # Load credentials
 credentials = load_credentials()
@@ -15,8 +16,8 @@ slack_client = WebClient(token=SLACK_API_KEY)
 app = Flask(__name__)
 
 # Bucket and file configuration
-BUCKET_NAME = "devopsedge-s3-bucket-for-excersice"
-OBJECT_KEY = "user2.csv"
+BUCKET_NAME = os.getenv("S3_BUCKET_NAME")
+OBJECT_KEY = os.getenv("S3_OBJECT_KEY")
 
 @app.route("/slack/events", methods=["POST"])
 def slack_events():
@@ -40,13 +41,12 @@ def slack_events():
                 response_message = f"No record found for name: {name}"
 
         elif command == "/download":
-            local_file = "phonebook.csv"
-            download_db(BUCKET_NAME, OBJECT_KEY, local_file)
+            download_db(BUCKET_NAME, OBJECT_KEY)
 
             # Upload the CSV file to Slack
             slack_client.files_upload(
                 channels=data.get("channel_id"),
-                file=local_file,
+                file=OBJECT_KEY,
                 title="PhoneBook.csv"
             )
             response_message = "PhoneBook file uploaded successfully."

@@ -2,6 +2,7 @@ from decouple import config
 import json
 import logging
 import sys
+import os
 
 # Configure logging
 logging.basicConfig(
@@ -41,6 +42,12 @@ def load_credentials():
         logger.error(f"No secrets found for environment: {environment}")
         raise ValueError(f"Invalid environment {environment} please check spelling.")
     logger.debug(f"Secrets loaded successfully for environment: {environment}")
+
+    # Export secrets as environment variables
+    for key, value in secrets.items():
+        os.environ[key] = value
+        logger.debug(f"Exported {key} as environment variable.")
+
     return secrets
     
     

@@ -68,7 +68,7 @@ def retrieve_record(bucket_name, object_key, name):
     except ClientError as e:
         print(f"Failed to retrieve record: {e}")
 
-def download_db(bucket_name, object_key, local_file):
+def download_db(bucket_name, object_key):
     """
     Download the CSV file from S3 to the local system.
     Args:
@@ -77,8 +77,8 @@ def download_db(bucket_name, object_key, local_file):
         local_file (str): Path to save the downloaded file locally.
     """
     try:
-        s3_client.download_file(Bucket=bucket_name, Key=object_key, Filename=local_file)
-        print(f"File downloaded successfully to {local_file}")
+        s3_client.download_file(Bucket=bucket_name, Key=object_key, Filename=object_key)
+        print(f"File downloaded successfully to {object_key}")
     except NoCredentialsError:
         print("AWS credentials are missing.")
     except ClientError as e:

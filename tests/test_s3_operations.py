@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import patch, MagicMock
-from python_library.s3_operations import add_record, retrieve_record, download_db
+from slack_bot.s3_operations import add_record, retrieve_record, download_db
 
 class TestS3Operations(unittest.TestCase):
     @patch("my_library.s3_operations.boto3.client")

@@ -49,8 +49,3 @@ def load_credentials():
         logger.debug(f"Exported {key} as environment variable.")
 
     return secrets
-    
-    
-
-
-

@@ -1,8 +1,8 @@
 from flask import Flask, request, jsonify
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
-from credentials import load_credentials
-from s3operations import add_record, retrieve_record, download_db
+from slack_bot.credentials import load_credentials
+from slack_bot.s3_operations import add_record, retrieve_record, download_db
 
 # Load credentials
 credentials = load_credentials()

@@ -5,8 +5,11 @@ from slack_bot.credentials import load_credentials
 from slack_bot.s3_operations import add_record, retrieve_record, download_db
 import os
 import logging
+from dotenv import load_dotenv
 
 logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
+
+load_dotenv()
 
 credentials = load_credentials()
 SLACK_API_KEY = credentials["SLACK_API_KEY"]

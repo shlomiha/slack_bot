@@ -1,8 +1,8 @@
-from decouple import config
 import json
 import logging
 import sys
 import os
+from dotenv import load_dotenv
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -13,6 +13,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+load_dotenv()
 
 def _load_secrets_json_(filepath: str="secrets.json") -> dict:
     try:
@@ -32,7 +33,7 @@ def load_credentials():
     """
     Load credentials from json file.
     """
-    environment = config("ENVIRONMENT", default="development").strip().lower()  
+    environment = os.getenv("ENVIRONMENT")
     secrets = _load_secrets_json_()
     secrets = secrets.get(environment)
     

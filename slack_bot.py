@@ -41,13 +41,16 @@ def slack_events():
                 response_message = f"No record found for name: {name}"
 
         elif command == "/download":
-            download_db(BUCKET_NAME, OBJECT_KEY)
+            local_file_path = download_db(BUCKET_NAME, OBJECT_KEY)
 
-            # Upload the CSV file to Slack
-            slack_client.files_upload(
+            if not os.path.exists(local_file_path):
+                raise FileNotFoundError(f"File not found: {local_file_path}")
+
+            slack_client.files_upload_v2(
                 channels=data.get("channel_id"),
-                file=OBJECT_KEY,
-                title="PhoneBook.csv"
+                file=local_file_path,
+                title="PhoneBook.csv",
+                request_timeout=300
             )
             response_message = "PhoneBook file uploaded successfully."
 

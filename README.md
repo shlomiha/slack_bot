@@ -35,6 +35,7 @@ AWS_SECRET_ACCESS_KEY	Your AWS IAM secret access key.
 SLACK_API_KEY	        Your Slack bot's OAuth token.
 S3_BUCKET_NAME	        Name of the S3 bucket storing the phonebook CSV file.
 S3_OBJECT_KEY	        Key (path) of the phonebook CSV file in the S3 bucket.
+S3_REGION               Name of the AWS region.
 ENVIRONMENT	            development or production (default is development).
 
 Example .env file:
@@ -79,7 +80,7 @@ The project includes a Dockerfile to containerize the application.
 
 Build the Docker Image:
 
-docker build -t phonebook-slack-bot .
+docker build -t slack_bot .
 
 Run the Container:
 

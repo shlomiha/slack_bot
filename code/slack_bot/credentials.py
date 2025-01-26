@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 load_dotenv()
 
-def _load_secrets_json_(filepath: str="secrets.json") -> dict:
+def _load_secrets_json_(filepath: str="/secrets/secrets.json") -> dict:
     try:
         with open(filepath, "r") as f:
             return json.load(f)

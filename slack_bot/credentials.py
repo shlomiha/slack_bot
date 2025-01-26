@@ -4,12 +4,11 @@ import logging
 import sys
 import os
 
-# Configure logging
 logging.basicConfig(
-    level=logging.DEBUG,  # Set the logging level
-    format="%(asctime)s - %(levelname)s - %(message)s",  # Define the log format
+    level=logging.DEBUG,
+    format="%(asctime)s - %(levelname)s - %(message)s",
     handlers=[
-        logging.StreamHandler(sys.stdout)  # Send log messages to stdout
+        logging.StreamHandler(sys.stdout)
     ]
 )
 logger = logging.getLogger(__name__)
@@ -33,7 +32,6 @@ def load_credentials():
     """
     Load credentials from json file.
     """
-    # Use environment variable to determine environment
     environment = config("ENVIRONMENT", default="development").strip().lower()  
     secrets = _load_secrets_json_()
     secrets = secrets.get(environment)
@@ -43,7 +41,6 @@ def load_credentials():
         raise ValueError(f"Invalid environment {environment} please check spelling.")
     logger.debug(f"Secrets loaded successfully for environment: {environment}")
 
-    # Export secrets as environment variables
     for key, value in secrets.items():
         os.environ[key] = value
         logger.debug(f"Exported {key} as environment variable.")

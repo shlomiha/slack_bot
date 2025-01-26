@@ -6,20 +6,15 @@ from slack_bot.s3_operations import add_record, retrieve_record, download_db
 import os
 import logging
 
-# Configure logging
 logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
 
-# Load credentials
 credentials = load_credentials()
 SLACK_API_KEY = credentials["SLACK_API_KEY"]
 
-# Initialize Slack client
-slack_client = WebClient(token=SLACK_API_KEY, timeout=120)
+slack_client = WebClient(token=SLACK_API_KEY)
 
-# Flask app for handling Slack events
 app = Flask(__name__)
 
-# Bucket and file configuration
 BUCKET_NAME = os.getenv("S3_BUCKET_NAME")
 OBJECT_KEY = os.getenv("S3_OBJECT_KEY")
 
@@ -38,7 +33,6 @@ def slack_events():
 
     try:
         if command == "/add":
-            # Add a record to S3
             try:
                 name, phone, email = map(str.strip, text.split(","))
                 if not (name and phone and email):
@@ -50,7 +44,6 @@ def slack_events():
                 response_message = "Invalid format. Use: `Name, Phone, Email`."
 
         elif command == "/get":
-            # Retrieve a record from S3
             if not text:
                 response_message = "Please provide a name to search for."
             else:
@@ -61,27 +54,23 @@ def slack_events():
                     response_message = f"No record found for the name: {text}"
 
         elif command == "/download":
-            # Download the database from S3
             try:
                 local_file_path = download_db(BUCKET_NAME, OBJECT_KEY)
                 logging.info(f"File downloaded to {local_file_path}")
 
-                # Check if file exists before uploading
                 if os.path.exists(local_file_path):
-                    with open(local_file_path, "rb") as file_content:
-                        try:
-                            response = slack_client.files_upload_v2(
-                                channels=channel_id,
-                                file=file_content,
-                                title="PhoneBook.csv",
-                                filetype="csv",  # Explicitly set filetype
-                                request_timeout=1200  # Increased timeout
-                            )
-                            logging.info(f"File uploaded successfully: {response}")
-                            response_message = "PhoneBook file uploaded successfully."
-                        except SlackApiError as e:
-                            logging.error(f"Slack API Error during file upload: {e.response.get('error', 'Unknown error')}")
-                            response_message = f"Slack API Error: {e.response.get('error', 'Unknown error')}"
+                    try:
+                        response = slack_client.files_upload_v2(
+                            channels=channel_id,
+                            file=local_file_path,
+                            title="PhoneBook.csv",
+                            filetype="csv"
+                        )
+                        logging.info(f"File uploaded successfully: {response}")
+                        response_message = "PhoneBook file uploaded successfully."
+                    except SlackApiError as e:
+                        logging.error(f"Slack API Error during file upload: {e.response.get('error', 'Unknown error')}")
+                        response_message = f"Slack API Error: {e.response.get('error', 'Unknown error')}"
                 else:
                     logging.error("File does not exist. Unable to upload.")
                     response_message = "File not found. Unable to upload."
@@ -93,13 +82,12 @@ def slack_events():
             logging.warning(f"Invalid command received: {command}")
             response_message = "Invalid command. Supported commands: `/add`, `/get`, `/download`."
 
-        # Send response back to Slack
-        return jsonify({"response_type": "in_channel", "text": response_message})
+        response = jsonify({"response_type": "in_channel", "text": response_message})
+        return response
 
     except Exception as e:
         logging.error(f"Unhandled error: {e}")
         return jsonify({"response_type": "ephemeral", "text": f"An error occurred: {str(e)}"})
 
-# Run the Flask app
 if __name__ == "__main__":
     app.run(port=3000)

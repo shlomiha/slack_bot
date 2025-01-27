@@ -12,5 +12,4 @@ services:
       - "$PWD/secrets:/secrets"
     env_file:
       - .env
-    command: sleep 10000
     restart: unless-stopped

@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "slack_bot"
+version = "0.1.0"
+description = "A library for reusable Python methods to be used AWS S3 bucket."
+authors = [
+    { name = "Shlomi Harari", email = "shlomiharari81@gmail.com" }
+]
+keywords = ["slack_bot", "s3", "python"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "boto3==1.36.4",
+    "botocore==1.36.4",
+    "python-dotenv==1.0.1"
+]
+requires-python = ">=3.8"

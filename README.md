@@ -1,150 +1,113 @@
-PhoneBook Slack Bot
-A Python-based Slack bot that integrates with AWS S3 to manage a CSV file containing contact details. The bot supports adding, retrieving, and downloading records through Slack slash commands.
+# Slack Bot
 
-Features
-Add Record: Add a new contact record to the phonebook.
-Retrieve Record: Fetch contact details by name.
-Download PhoneBook: Download the complete phonebook as a CSV file.
-Requirements
-Python Requirements
-The project uses the following Python libraries:
+A Python-based Slack bot designed to integrate with AWS S3, facilitating seamless interactions between Slack and S3 storage.
 
-boto3: AWS SDK for Python.
-python-decouple: Securely handle environment variables.
-slack-sdk: Slack API integration.
-Flask: Web framework for handling Slack events.
-Install dependencies using:
+## Table of Contents
 
-bash
-Copy
-Edit
-pip install -r requirements.txt
-System Requirements
-Python 3.9 or later.
-AWS S3 bucket with appropriate permissions.
-Slack workspace and app configured with slash commands.
-Setup
-Environment Variables
-Create a .env file in the project root with the following variables:
+- [Features]
+- [Prerequisites]
+- [Installation]
+- [Configuration]
+- [Usage]
 
-Variable	Description
-AWS_ACCESS_KEY_ID	Your AWS IAM access key ID.
-AWS_SECRET_ACCESS_KEY	Your AWS IAM secret access key.
-SLACK_API_KEY	Your Slack bot's OAuth token.
-S3_BUCKET_NAME	Name of the S3 bucket storing the phonebook CSV file.
-S3_OBJECT_KEY	Key (path) of the phonebook CSV file in the S3 bucket.
-ENVIRONMENT	development or production (default is development).
-Example .env file:
-makefile
-Copy
-Edit
-AWS_ACCESS_KEY_ID=your-aws-access-key-id
-AWS_SECRET_ACCESS_KEY=your-aws-secret-access-key
-SLACK_API_KEY=xoxb-your-slack-bot-token
-S3_BUCKET_NAME=devopsedge-s3-bucket-for-excersice
-S3_OBJECT_KEY=user2.csv
-ENVIRONMENT=development
-Usage
-Running Locally
-Install Dependencies:
+## Features
 
-bash
-Copy
-Edit
-pip install -r requirements.txt
-Run the Flask App:
+- **AWS S3 Integration**: Add and retrieve records from an S3 bucket.
+- **Slack Commands**: Execute commands within Slack to interact with the bot.
+- **Containerized Deployment**: Run the bot in a Docker container for consistency and ease of setup.
 
-bash
-Copy
-Edit
-python slack_bot.py
-Expose the App to Slack: Use ngrok to expose your local app to the internet:
+## Prerequisites
 
-bash
-Copy
-Edit
-ngrok http 3000
-Configure Slack Slash Commands:
+Before setting up the Slack Bot, ensure you have the following installed on your host machine:
 
-Go to your Slack app configuration and set the Request URL for slash commands (e.g., /add, /get, /download) to the ngrok HTTPS URL:
-arduino
-Copy
-Edit
-https://<your-ngrok-id>.ngrok.io/slack/events
-Test Slash Commands in Slack:
+- **Docker Runtime**: [Install Docker](https://docs.docker.com/get-docker/)
+- **Docker Compose**: [Install Docker Compose](https://docs.docker.com/compose/install/)
+- **Slack Workspace**: [Create a Slack workspace](https://slack.com/get-started)
+- **ngrok Account**: To expose your local server to the internet.
+- **Python 3.8 or Higher** (Optional): If you prefer to run the bot locally without Docker.
 
-/add John Doe,1234567890,john@example.com
-/get John Doe
-/download
-Docker Setup
-Dockerfile
-The project includes a Dockerfile to containerize the application.
+## Installation
 
-Build the Docker Image:
+1. Clone the Repository
 
-bash
-Copy
-Edit
-docker build -t phonebook-slack-bot .
-Run the Container:
+    git clone https://github.com/shlomiha/slack_bot.git
+    cd slack_bot
 
-bash
-Copy
-Edit
-docker run -e AWS_ACCESS_KEY_ID=your-aws-access-key-id \
-           -e AWS_SECRET_ACCESS_KEY=your-aws-secret-access-key \
-           -e SLACK_API_KEY=xoxb-your-slack-bot-token \
-           -e S3_BUCKET_NAME=devopsedge-s3-bucket-for-excersice \
-           -e S3_OBJECT_KEY=user2.csv \
-           -e ENVIRONMENT=production \
-           -p 3000:3000 phonebook-slack-bot
-Docker Build Arguments
-Build Argument	Description
-AWS_ACCESS_KEY_ID	AWS access key ID for S3 operations.
-AWS_SECRET_ACCESS_KEY	AWS secret access key for S3 operations.
-SLACK_API_KEY	Slack bot OAuth token.
-Build the image with build arguments if needed:
+2. Create a Slack App
 
-bash
-Copy
-Edit
-docker build --build-arg AWS_ACCESS_KEY_ID=your-aws-access-key-id \
-             --build-arg AWS_SECRET_ACCESS_KEY=your-aws-secret-access-key \
-             --build-arg SLACK_API_KEY=xoxb-your-slack-bot-token \
-             -t phonebook-slack-bot .
-Slash Commands
-Command	Description	Example Usage
-/add	Adds a new record to the phonebook.	/add John,1234567890,john@example.com
-/get	Retrieves details of a specific record by name.	/get John
-/download	Downloads the phonebook CSV file and uploads it to Slack.	/download
-Testing
-Unit Tests
-Unit tests are located in the tests directory. Run them using:
+    Create the App:
+        Navigate to the Slack API Apps page.
+        Click "Create New App".
+        Choose "From scratch" and provide an app name and select your workspace.
 
-bash
-Copy
-Edit
-python -m unittest discover -s tests
-Project Structure
-bash
-Copy
-Edit
-my_project/
-├── my_library/
-│   ├── __init__.py              # Library initialization
-│   ├── s3_operations.py         # S3 operations (add, retrieve, download)
-│   └── credentials.py           # Credential management
-├── tests/
-│   ├── __init__.py              # Test initialization
-│   └── test_s3_operations.py    # Unit tests for S3 operations
-├── slack_bot.py                 # Main Flask app for Slack integration
-├── Dockerfile                   # Docker container configuration
-├── requirements.txt             # Python dependencies
-├── pyproject.toml               # Project metadata and packaging
-└── README.md                    # Project documentation
-Known Issues
-ngrok Free Tier: Public URLs change every time ngrok is restarted. Use a paid plan for a fixed subdomain.
-Timeouts on Large Files: Ensure your CSV file is reasonably sized for efficient operations.
-License
-This project is licensed under the MIT License. See the LICENSE file for details.
+    Set Up Slash Commands:
+        In your app settings, go to "Slash Commands".
+        Click "Create New Command".
+        Set the command (e.g., /yourcommand) and the request URL (this will be your ngrok URL plus the endpoint, e.g., https://your-ngrok-id.ngrok.io/your-endpoint).
 
+    Enable Event Subscriptions:
+        Go to "Event Subscriptions".
+        Enable events and set the request URL to your ngrok URL.
+        Subscribe to bot events as needed.
+
+    Install the App:
+        Go to "OAuth & Permissions".
+        Configure the following Bot Token Scopes:
+            commands
+            chat:write
+            files:read
+            files:write
+            channels:history
+        Install the app to your workspace and note down the Bot User OAuth Token.
+
+## Configurations
+
+        1. Environment Variables
+
+        Create a .env file in the root directory with the following variables:
+
+        # S3 Bucket and Object Details
+        S3_BUCKET_NAME="your-s3-bucket-name"
+        S3_OBJECT_KEY="your-s3-filename"
+        S3_REGION="your-s3-aws-region"
+
+        # Application Environment
+        ENVIRONMENT="your-chosen-environment"
+
+        Replace the placeholder values with your actual credentials.
+
+        2. Create a secrets.json file under /secrets/ directory with the following values:
+
+            {
+                "production": {
+                    "AWS_ACCESS_KEY_ID": "your-aws-access-key-id-for-production",
+                    "AWS_SECRET_ACCESS_KEY": "your-aws-secret-access-key-for-production",
+                    "SLACK_API_KEY": "your-slack-api-key-for-production",
+                    "NGROK_TOKEN": "your-ngrok-auth-token-for-production"
+                },
+
+                "development": {
+                    "AWS_ACCESS_KEY_ID": "your-aws-access-key-id-for-production",
+                    "AWS_SECRET_ACCESS_KEY": "your-aws-secret-access-key-for-development",
+                    "SLACK_API_KEY": "your-slack-api-key-for-development",
+                    "NGROK_TOKEN": "your-ngrok-auth-token-for-development"
+                }
+            }
+        
+ ## Usage:
+   
+        Start the Application:
+            - Build and run the container:
+                docker-compose up --build
+            - Retrieve the ngrok URL from the containers output
+            - Update the Slack app's request URL as follows  `https://<ngrok-url>/slack/events`.
+	
+        Slack Workspace:
+            - Invite the bot to your Slack workspace in the designated application channel: `/invite @slack_bot`.
+            - Use slash commands:
+                - `/add <name>, <email>, <phone>` to add a contact.
+                - `/get <name>` to retrieve contact details.
+                - `/download to download the entire phonebook.
+            - View responses directly in Slack.
+
+Have Fun!

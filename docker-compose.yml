@@ -1,0 +1,15 @@
+version: "3.9"
+
+services:
+  slack_bot:
+    image: slack_bot
+    build:
+      context: .
+    container_name: slack_bot
+    ports:
+      - "3000:3000"
+    volumes:
+      - "$PWD/secrets:/secrets"
+    env_file:
+      - .env
+    restart: unless-stopped

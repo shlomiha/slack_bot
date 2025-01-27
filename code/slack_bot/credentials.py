@@ -16,6 +16,15 @@ logger = logging.getLogger(__name__)
 load_dotenv()
 
 def _load_secrets_json_(filepath: str="/secrets/secrets.json") -> dict:
+    """
+    Load secrets from a JSON file.
+    
+    Args:
+        filepath (str, optional): _description_. Defaults to "/secrets/secrets.json".
+
+    Returns:
+        dict: _description_
+    """
     try:
         with open(filepath, "r") as f:
             return json.load(f)
@@ -31,7 +40,7 @@ def _load_secrets_json_(filepath: str="/secrets/secrets.json") -> dict:
 
 def load_credentials():
     """
-    Load credentials from json file.
+    Load credentials from json file and export them as environment variables.
     """
     environment = os.getenv("ENVIRONMENT")
     secrets = _load_secrets_json_()

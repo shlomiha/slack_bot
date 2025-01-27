@@ -7,9 +7,9 @@ import logging
 
 logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
 
-def add_record(bucket_name, object_key, new_row):
+def add_record(bucket_name: str, object_key: str, new_row: list): 
     """
-    Add a new row to the CSV file stored in S3.
+    Adds a new row to the CSV file stored in S3.
     Args:
         bucket_name (str): The S3 bucket name.
         object_key (str): The S3 object key (file path).
@@ -34,7 +34,7 @@ def add_record(bucket_name, object_key, new_row):
         logging.error(f"Error in add_record: {e}")
         raise
 
-def retrieve_record(bucket_name, object_key, name):
+def retrieve_record(bucket_name: str, object_key: str, name: str) -> list:
     """
     Retrieve a record by name from the CSV file stored in S3.
     Args:
@@ -62,7 +62,7 @@ def retrieve_record(bucket_name, object_key, name):
         logging.error(f"Error in retrieve_record: {e}")
         raise
 
-def download_db(bucket_name, object_key, local_file=None):
+def download_db(bucket_name: str, object_key: str, local_file=None):
     """
     Download the CSV file from S3 to the local system.
     Args:
